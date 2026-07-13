@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>¿Qué comemos?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --tile-dark:#1F3A3D;
+    --tile-grout:#15282A;
+    --tile-line: rgba(244,236,216,0.07);
+    --paper:#F4ECD8;
+    --paper-shadow: #E3D8B8;
+    --ink:#20302B;
+    --mustard:#D4A017;
+    --mustard-dark:#A87B10;
+    --brick:#B44B34;
+    --brick-dark:#8C3924;
+    --cream-text:#F4ECD8;
+    --receipt:#FBF8EF;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      repeating-linear-gradient(0deg, var(--tile-grout) 0 2px, transparent 2px 72px),
+      repeating-linear-gradient(90deg, var(--tile-grout) 0 2px, transparent 2px 72px),
+      var(--tile-dark);
+    font-family:'Inter',sans-serif;
+    color:var(--cream-text);
+    min-height:100vh;
+    padding-bottom:120px;
+  }
+  header{
+    padding:34px 20px 22px;
+    text-align:center;
+  }
+  header .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--mustard);
+    margin-bottom:6px;
+  }
+  header h1{
+    font-family:'Fraunces',serif;
+    font-optical-sizing:auto;
+    font-weight:700;
+    font-size:clamp(30px,8vw,42px);
+    margin:0;
+    line-height:1.05;
+  }
+  header p{
+    font-size:13px;
+    color:rgba(244,236,216,0.65);
+    margin:10px 0 0;
+  }
+
+  .tabs{
+    display:flex;
+    gap:8px;
+    padding:0 16px 18px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  .tab{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    padding:9px 16px;
+    border-radius:999px;
+    border:1px solid rgba(244,236,216,0.25);
+    background:transparent;
+    color:var(--cream-text);
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .tab.active{
+    background:var(--mustard);
+    border-color:var(--mustard);
+    color:var(--tile-dark);
+    font-weight:600;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+    padding:0 16px;
+    max-width:640px;
+    margin:0 auto;
+  }
+  @media(min-width:480px){
+    .grid{grid-template-columns:repeat(3,1fr);}
+  }
+
+  .card{
+    position:relative;
+    background:var(--paper);
+    color:var(--ink);
+    border-radius:10px;
+    padding:16px 14px 14px;
+    min-height:96px;
+    display:flex;
+    align-items:flex-end;
+    cursor:pointer;
+    box-shadow:0 3px 0 var(--paper-shadow), 0 6px 14px rgba(0,0,0,0.25);
+    transform:rotate(var(--r,0deg));
+    transition:transform .12s ease, box-shadow .12s ease;
+    -webkit-tap-highlight-color:transparent;
+    user-select:none;
+  }
+  .card:active{ transform:scale(0.96) rotate(var(--r,0deg)); }
+  .card.selected{
+    box-shadow:0 0 0 3px var(--mustard), 0 6px 14px rgba(0,0,0,0.3);
+  }
+  .card .tag{
+    position:absolute;
+    top:10px;
+    right:10px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:9px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    padding:3px 7px;
+    border-radius:999px;
+    color:var(--receipt);
+  }
+  .card .tag.comida{background:var(--mustard-dark);}
+  .card .tag.cena{background:var(--brick-dark);}
+  .card .name{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:16px;
+    line-height:1.2;
+  }
+  .card .check{
+    position:absolute;
+    top:8px; left:8px;
+    width:20px;height:20px;
+    border-radius:50%;
+    background:var(--mustard);
+    color:var(--tile-dark);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    font-size:13px;
+    font-weight:700;
+  }
+  .card.selected .check{display:flex;}
+  .card .del{
+    position:absolute;
+    bottom:8px; right:8px;
+    font-size:11px;
+    color:rgba(32,48,43,0.35);
+    font-family:'IBM Plex Mono',monospace;
+    padding:4px;
+  }
+
+  .empty{
+    grid-column:1/-1;
+    text-align:center;
+    color:rgba(244,236,216,0.6);
+    font-size:13px;
+    padding:30px 10px;
+    font-family:'IBM Plex Mono',monospace;
+  }
+
+  .add-wrap{
+    max-width:640px;
+    margin:20px auto 0;
+    padding:0 16px;
+  }
+  .add-btn{
+    width:100%;
+    padding:14px;
+    border-radius:10px;
+    border:1.5px dashed rgba(244,236,216,0.35);
+    background:transparent;
+    color:var(--cream-text);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    letter-spacing:.05em;
+    cursor:pointer;
+  }
+  .add-btn:active{background:rgba(244,236,216,0.08);}
+
+  /* Modal */
+  .modal-overlay{
+    position:fixed; inset:0;
+    background:rgba(15,25,23,0.72);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:50;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal{
+    background:var(--paper);
+    color:var(--ink);
+    border-radius:14px;
+    padding:22px;
+    width:100%;
+    max-width:360px;
+  }
+  .modal h3{
+    font-family:'Fraunces',serif;
+    margin:0 0 14px;
+    font-size:20px;
+  }
+  .modal label{
+    display:block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    margin:12px 0 6px;
+    color:#5a5342;
+  }
+  .modal input[type=text]{
+    width:100%;
+    padding:11px 12px;
+    border-radius:8px;
+    border:1.5px solid #d8cba3;
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    background:var(--receipt);
+    color:var(--ink);
+  }
+  .seg{
+    display:flex;
+    gap:8px;
+    margin-top:4px;
+  }
+  .seg button{
+    flex:1;
+    padding:10px;
+    border-radius:8px;
+    border:1.5px solid #d8cba3;
+    background:var(--receipt);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    text-transform:uppercase;
+    cursor:pointer;
+    color:var(--ink);
+  }
+  .seg button.sel-comida{background:var(--mustard);border-color:var(--mustard);color:var(--tile-dark);font-weight:700;}
+  .seg button.sel-cena{background:var(--brick);border-color:var(--brick);color:var(--receipt);font-weight:700;}
+  .modal-actions{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+  }
+  .modal-actions button{
+    flex:1;
+    padding:12px;
+    border-radius:8px;
+    border:none;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+  }
+  .btn-cancel{background:transparent;color:#5a5342;border:1.5px solid #d8cba3 !important;}
+  .btn-save{background:var(--tile-dark);color:var(--receipt);}
+
+  /* Receipt bottom sheet */
+  .receipt-tab{
+    position:fixed;
+    bottom:0; left:0; right:0;
+    z-index:40;
+  }
+  .receipt-handle{
+    max-width:640px;
+    margin:0 auto;
+    background:var(--mustard);
+    color:var(--tile-dark);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    text-align:center;
+    padding:12px;
+    border-radius:12px 12px 0 0;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+  }
+  .receipt-handle .count{
+    background:var(--tile-dark);
+    color:var(--mustard);
+    border-radius:999px;
+    padding:1px 8px;
+    font-size:11px;
+  }
+  .receipt-body{
+    max-width:640px;
+    margin:0 auto;
+    background:var(--receipt);
+    color:var(--ink);
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .25s ease;
+  }
+  .receipt-body.open{
+    max-height:70vh;
+    overflow-y:auto;
+  }
+  .receipt-inner{
+    padding:18px 20px 26px;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .receipt-inner h4{
+    font-family:'Fraunces',serif;
+    font-size:17px;
+    margin:0 0 10px;
+    text-align:center;
+    letter-spacing:0;
+  }
+  .zigzag{
+    height:10px;
+    background:
+      linear-gradient(135deg, var(--receipt) 25%, transparent 25%) -5px 0,
+      linear-gradient(225deg, var(--receipt) 25%, transparent 25%) -5px 0;
+    background-size:10px 10px;
+    background-color:var(--tile-dark);
+  }
+  .r-line{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:13px;
+    padding:6px 0;
+    border-bottom:1px dashed #cbbf98;
+  }
+  .r-line .rname{flex:1;}
+  .r-line .rtag{font-size:10px;color:#8a7f5f;margin-left:8px;}
+  .r-line button{
+    background:none;
+    border:none;
+    color:var(--brick);
+    font-size:15px;
+    cursor:pointer;
+    padding:2px 6px;
+  }
+  .r-empty{
+    text-align:center;
+    font-size:12px;
+    color:#8a7f5f;
+    padding:14px 0;
+  }
+  .shop-add{
+    display:flex;
+    gap:8px;
+    margin-top:16px;
+  }
+  .shop-add input{
+    flex:1;
+    padding:10px;
+    border-radius:6px;
+    border:1.5px solid #cbbf98;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    background:#fff;
+  }
+  .shop-add button{
+    padding:10px 14px;
+    border-radius:6px;
+    border:none;
+    background:var(--tile-dark);
+    color:var(--receipt);
+    font-weight:600;
+    cursor:pointer;
+  }
+  .shop-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 0;
+    border-bottom:1px dashed #cbbf98;
+    font-size:14px;
+  }
+  .shop-item input[type=checkbox]{
+    width:18px;height:18px;
+    accent-color:var(--brick);
+    flex-shrink:0;
+  }
+  .shop-item.checked span{text-decoration:line-through;color:#a89f83;}
+  .shop-item .x{
+    margin-left:auto;
+    background:none;border:none;color:#b8ac82;font-size:14px;cursor:pointer;
+  }
+  .clear-week{
+    width:100%;
+    margin-top:18px;
+    padding:11px;
+    border-radius:8px;
+    border:1.5px solid var(--brick);
+    background:transparent;
+    color:var(--brick);
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    cursor:pointer;
+  }
+  .status{
+    text-align:center;
+    font-size:11px;
+    color:rgba(244,236,216,0.4);
+    font-family:'IBM Plex Mono',monospace;
+    padding:10px 0 0;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">El fichero de casa</div>
+  <h1>¿Qué comemos?</h1>
+  <p>Toca un plato para apuntarlo a la semana. Nada más que pensar.<br><span style="font-size:11px;">Los datos se guardan solos, en cualquier móvil.</span></p>
+</header>
+
+<div class="tabs">
+  <button class="tab active" data-filter="todas">Todas</button>
+  <button class="tab" data-filter="comida">Comidas</button>
+  <button class="tab" data-filter="cena">Cenas</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="add-wrap">
+  <button class="add-btn" id="openAdd">+ Añadir plato nuevo</button>
+</div>
+
+<div class="status" id="status"></div>
+
+<!-- Modal añadir plato -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3>Plato nuevo</h3>
+    <label>Nombre</label>
+    <input type="text" id="mealName" placeholder="Ej: judías verdes con huevos rellenos">
+    <label>Tipo</label>
+    <div class="seg">
+      <button type="button" id="segComida" class="sel-comida">Comida</button>
+      <button type="button" id="segCena">Cena</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="cancelAdd">Cancelar</button>
+      <button class="btn-save" id="saveAdd">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Recibo / lista de la compra -->
+<div class="receipt-tab">
+  <div class="receipt-handle" id="receiptHandle">
+    Esta semana <span class="count" id="weekCount">0</span> · toca para ver
+  </div>
+  <div class="receipt-body" id="receiptBody">
+    <div class="zigzag"></div>
+    <div class="receipt-inner">
+      <h4>Platos de la semana</h4>
+      <div id="weekList"></div>
+
+      <h4 style="margin-top:22px;">Lista de la compra</h4>
+      <div id="shopList"></div>
+      <div class="shop-add">
+        <input type="text" id="shopInput" placeholder="Añadir algo a la compra...">
+        <button id="shopAddBtn">+</button>
+      </div>
+
+      <button class="clear-week" id="clearWeek">Vaciar semana y lista</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================
+// CONFIGURA AQUÍ TU PROYECTO DE SUPABASE
+// (Project Settings -> API en supabase.com)
+// ============================================
+const SUPABASE_URL = "https://ulcndrnwjvrcbaplgxsp.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsY25kcm53anZyY2JhcGxneHNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM5NDcyODUsImV4cCI6MjA5OTUyMzI4NX0.nFQwZXgD_PJWeTxbdsEDMGq2Ks5x9iRqlE83r6sdu0c";
+// ============================================
+
+async function kvGet(key){
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/kv_store?key=eq.${encodeURIComponent(key)}&select=value`, {
+    headers:{
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`
+    }
+  });
+  if(!res.ok) throw new Error('kvGet failed: ' + res.status);
+  const rows = await res.json();
+  if(!rows.length) return null;
+  return rows[0].value;
+}
+
+async function kvSet(key, value){
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/kv_store?on_conflict=key`, {
+    method:'POST',
+    headers:{
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      'Content-Type':'application/json',
+      'Prefer':'resolution=merge-duplicates,return=minimal'
+    },
+    body: JSON.stringify([{ key, value, updated_at: new Date().toISOString() }])
+  });
+  if(!res.ok) throw new Error('kvSet failed: ' + res.status);
+}
+
+const DEFAULT_MEALS = [
+  {name:"Judías verdes con huevos rellenos", type:"comida"},
+  {name:"Macarrones con atún", type:"comida"},
+  {name:"Lentejas", type:"comida"},
+  {name:"Paella", type:"comida"},
+  {name:"Arroz con pollo", type:"comida"},
+  {name:"Pizza", type:"cena"},
+  {name:"Hamburguesas", type:"cena"},
+  {name:"Tortilla de patatas", type:"cena"},
+  {name:"Sopa de fideos", type:"cena"},
+  {name:"Croquetas con ensalada", type:"cena"},
+];
+
+let meals = [];
+let selected = [];   // ids de platos elegidos esta semana
+let shopping = [];   // {id, text, checked}
+let filter = "todas";
+let newMealType = "comida";
+let saving = false;
+
+const $ = (id) => document.getElementById(id);
+const grid = $("grid");
+const statusEl = $("status");
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+function setStatus(msg){
+  statusEl.textContent = msg;
+  if(msg) setTimeout(()=>{ if(statusEl.textContent===msg) statusEl.textContent=""; }, 2000);
+}
+
+async function loadAll(){
+  if(SUPABASE_URL.includes('PON_AQUI') || SUPABASE_ANON_KEY.includes('PON_AQUI')){
+    setStatus('Falta configurar SUPABASE_URL y SUPABASE_ANON_KEY en el código');
+    meals = DEFAULT_MEALS.map(m=>({id:uid(), ...m}));
+    render();
+    return;
+  }
+
+  try{
+    meals = await kvGet('meals');
+  }catch(e){ setStatus('Error al conectar con la base de datos'); meals = null; }
+  if(!meals || meals.length===0){
+    meals = DEFAULT_MEALS.map(m=>({id:uid(), ...m}));
+    try{ await kvSet('meals', meals); }catch(e){}
+  }
+
+  try{
+    selected = (await kvGet('week-selected')) || [];
+  }catch(e){ selected = []; }
+
+  try{
+    shopping = (await kvGet('shopping-list')) || [];
+  }catch(e){ shopping = []; }
+
+  render();
+}
+
+async function saveMeals(){
+  try{ await kvSet('meals', meals); }catch(e){ setStatus('No se pudo guardar (revisa tu conexión)'); }
+}
+async function saveSelected(){
+  try{ await kvSet('week-selected', selected); }catch(e){ setStatus('No se pudo guardar (revisa tu conexión)'); }
+}
+async function saveShopping(){
+  try{ await kvSet('shopping-list', shopping); }catch(e){ setStatus('No se pudo guardar (revisa tu conexión)'); }
+}
+
+function render(){
+  renderGrid();
+  renderReceipt();
+}
+
+function renderGrid(){
+  grid.innerHTML = "";
+  const list = meals.filter(m => filter==="todas" ? true : m.type===filter);
+  if(list.length===0){
+    grid.innerHTML = '<div class="empty">No hay platos aquí todavía.<br>Añade el primero abajo.</div>';
+    return;
+  }
+  list.forEach((m, i)=>{
+    const card = document.createElement('div');
+    card.className = 'card' + (selected.includes(m.id) ? ' selected' : '');
+    card.style.setProperty('--r', ((i % 5) - 2) * 0.6 + 'deg');
+    card.innerHTML = `
+      <div class="check">✓</div>
+      <div class="tag ${m.type}">${m.type}</div>
+      <div class="name">${escapeHtml(m.name)}</div>
+      <div class="del" data-id="${m.id}">borrar</div>
+    `;
+    card.addEventListener('click', (e)=>{
+      if(e.target.classList.contains('del')){
+        e.stopPropagation();
+        deleteMeal(m.id);
+        return;
+      }
+      toggleSelect(m.id);
+    });
+    grid.appendChild(card);
+  });
+}
+
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+async function toggleSelect(id){
+  if(selected.includes(id)){
+    selected = selected.filter(x=>x!==id);
+  } else {
+    selected.push(id);
+  }
+  render();
+  await saveSelected();
+}
+
+async function deleteMeal(id){
+  meals = meals.filter(m=>m.id!==id);
+  selected = selected.filter(x=>x!==id);
+  render();
+  await saveMeals();
+  await saveSelected();
+  setStatus('Plato borrado');
+}
+
+function renderReceipt(){
+  $("weekCount").textContent = selected.length;
+  const weekList = $("weekList");
+  if(selected.length===0){
+    weekList.innerHTML = '<div class="r-empty">Todavía no has elegido ningún plato.</div>';
+  } else {
+    weekList.innerHTML = selected.map(id=>{
+      const m = meals.find(x=>x.id===id);
+      if(!m) return '';
+      return `<div class="r-line">
+        <span class="rname">${escapeHtml(m.name)} <span class="rtag">${m.type}</span></span>
+        <button data-id="${m.id}" class="rm-week">×</button>
+      </div>`;
+    }).join('');
+    weekList.querySelectorAll('.rm-week').forEach(btn=>{
+      btn.addEventListener('click', ()=> toggleSelect(btn.dataset.id));
+    });
+  }
+
+  const shopList = $("shopList");
+  if(shopping.length===0){
+    shopList.innerHTML = '<div class="r-empty">Lista de la compra vacía.</div>';
+  } else {
+    shopList.innerHTML = shopping.map(it=>`
+      <div class="shop-item ${it.checked?'checked':''}">
+        <input type="checkbox" data-id="${it.id}" ${it.checked?'checked':''}>
+        <span>${escapeHtml(it.text)}</span>
+        <button class="x" data-id="${it.id}">×</button>
+      </div>
+    `).join('');
+    shopList.querySelectorAll('input[type=checkbox]').forEach(cb=>{
+      cb.addEventListener('change', ()=> toggleShopChecked(cb.dataset.id));
+    });
+    shopList.querySelectorAll('.x').forEach(btn=>{
+      btn.addEventListener('click', ()=> removeShopItem(btn.dataset.id));
+    });
+  }
+}
+
+async function toggleShopChecked(id){
+  shopping = shopping.map(it=> it.id===id ? {...it, checked:!it.checked} : it);
+  renderReceipt();
+  await saveShopping();
+}
+async function removeShopItem(id){
+  shopping = shopping.filter(it=>it.id!==id);
+  renderReceipt();
+  await saveShopping();
+}
+
+// Tabs
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    filter = tab.dataset.filter;
+    renderGrid();
+  });
+});
+
+// Modal añadir plato
+$("openAdd").addEventListener('click', ()=>{
+  $("mealName").value = "";
+  newMealType = "comida";
+  $("segComida").classList.add('sel-comida');
+  $("segCena").classList.remove('sel-cena');
+  $("modalOverlay").classList.add('open');
+  setTimeout(()=>$("mealName").focus(), 50);
+});
+$("cancelAdd").addEventListener('click', ()=> $("modalOverlay").classList.remove('open'));
+$("modalOverlay").addEventListener('click', (e)=>{ if(e.target.id==='modalOverlay') $("modalOverlay").classList.remove('open'); });
+$("segComida").addEventListener('click', ()=>{
+  newMealType='comida';
+  $("segComida").classList.add('sel-comida');
+  $("segCena").classList.remove('sel-cena');
+});
+$("segCena").addEventListener('click', ()=>{
+  newMealType='cena';
+  $("segCena").classList.add('sel-cena');
+  $("segComida").classList.remove('sel-comida');
+});
+$("saveAdd").addEventListener('click', async ()=>{
+  const name = $("mealName").value.trim();
+  if(!name){ setStatus('Escribe un nombre'); return; }
+  if(saving) return;
+  saving = true;
+  meals.push({id:uid(), name, type:newMealType});
+  render();
+  await saveMeals();
+  saving = false;
+  $("modalOverlay").classList.remove('open');
+  setStatus('Plato añadido');
+});
+
+// Recibo (bottom sheet)
+let receiptOpen = false;
+$("receiptHandle").addEventListener('click', ()=>{
+  receiptOpen = !receiptOpen;
+  $("receiptBody").classList.toggle('open', receiptOpen);
+});
+
+$("shopAddBtn").addEventListener('click', addShopItem);
+$("shopInput").addEventListener('keydown', (e)=>{ if(e.key==='Enter') addShopItem(); });
+async function addShopItem(){
+  const val = $("shopInput").value.trim();
+  if(!val) return;
+  shopping.push({id:uid(), text:val, checked:false});
+  $("shopInput").value = "";
+  renderReceipt();
+  await saveShopping();
+}
+
+$("clearWeek").addEventListener('click', async ()=>{
+  if(!confirm('¿Vaciar los platos de la semana y la lista de la compra?')) return;
+  selected = [];
+  shopping = [];
+  render();
+  await saveSelected();
+  await saveShopping();
+  setStatus('Semana vaciada');
+});
+
+loadAll();
+</script>
+</body>
+</html>
