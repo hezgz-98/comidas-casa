@@ -390,6 +390,19 @@
     font-weight:600;
     cursor:pointer;
   }
+  .export-btn{
+    width:100%;
+    margin-top:14px;
+    padding:12px;
+    border-radius:8px;
+    border:1.5px solid var(--tile-dark);
+    background:var(--tile-dark);
+    color:var(--receipt);
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    cursor:pointer;
+  }
   .shop-item{
     display:flex;
     align-items:center;
@@ -487,6 +500,8 @@
         <input type="text" id="shopInput" placeholder="Añadir algo a la compra...">
         <button id="shopAddBtn">+</button>
       </div>
+
+      <button class="export-btn" id="exportBtn">📤 Compartir lista de la compra</button>
 
       <button class="clear-week" id="clearWeek">Vaciar semana y lista</button>
     </div>
@@ -776,6 +791,31 @@ $("clearWeek").addEventListener('click', async ()=>{
   await saveSelected();
   await saveShopping();
   setStatus('Semana vaciada');
+});
+
+$("exportBtn").addEventListener('click', async ()=>{
+  const pending = shopping.filter(it=>!it.checked);
+  if(pending.length===0){
+    setStatus('No hay nada pendiente en la lista');
+    return;
+  }
+  const text = pending.map(it=>it.text).join('\n');
+
+  if(navigator.share){
+    try{
+      await navigator.share({ title:'Lista de la compra', text });
+      return;
+    }catch(e){
+      // usuario canceló el share o no está soportado del todo, seguimos al fallback
+    }
+  }
+
+  try{
+    await navigator.clipboard.writeText(text);
+    setStatus('Copiado. Pégalo en tu Bloc de notas');
+  }catch(e){
+    setStatus('No se pudo compartir ni copiar');
+  }
 });
 
 loadAll();
