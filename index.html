@@ -16,6 +16,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
   :root{
     --tile-dark:#1F3A3D;
@@ -56,180 +57,68 @@
     min-height:100vh;
     padding-bottom:130px;
   }
-  header{
-    padding:30px 20px 18px;
-    text-align:center;
-    position:relative;
-  }
+  header{ padding:30px 20px 18px; text-align:center; position:relative; }
   .font-toggle{
-    position:absolute;
-    top:22px; right:16px;
-    background:rgba(244,236,216,0.1);
-    border:1px solid rgba(244,236,216,0.3);
-    color:var(--cream-text);
-    border-radius:8px;
-    padding:7px 10px;
-    font-family:'IBM Plex Mono',monospace;
-    font-size:12px;
-    font-weight:600;
-    cursor:pointer;
+    position:absolute; top:22px; right:16px;
+    background:rgba(244,236,216,0.1); border:1px solid rgba(244,236,216,0.3);
+    color:var(--cream-text); border-radius:8px; padding:7px 10px;
+    font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600; cursor:pointer;
   }
   .font-toggle.active{ background:var(--mustard); color:var(--tile-dark); border-color:var(--mustard); }
   header .eyebrow{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:var(--fs-small);
-    letter-spacing:.18em;
-    text-transform:uppercase;
-    color:var(--mustard);
-    margin-bottom:6px;
+    font-family:'IBM Plex Mono',monospace; font-size:var(--fs-small); letter-spacing:.18em;
+    text-transform:uppercase; color:var(--mustard); margin-bottom:6px;
   }
-  header h1{
-    font-family:'Fraunces',serif;
-    font-weight:700;
-    font-size:var(--fs-h1);
-    margin:0;
-    line-height:1.05;
-  }
-  header p{
-    font-size:var(--fs-small);
-    color:rgba(244,236,216,0.65);
-    margin:10px 0 0;
-  }
+  header h1{ font-family:'Fraunces',serif; font-weight:700; font-size:var(--fs-h1); margin:0; line-height:1.05; }
+  header p{ font-size:var(--fs-small); color:rgba(244,236,216,0.65); margin:10px 0 0; }
 
-  /* Nav principal */
-  .main-nav{
-    display:flex;
-    gap:8px;
-    max-width:640px;
-    margin:0 auto;
-    padding:0 16px 18px;
-  }
+  .main-nav{ display:flex; gap:8px; max-width:640px; margin:0 auto; padding:0 16px 18px; }
   .main-nav button{
-    flex:1;
-    padding:12px;
-    border-radius:10px;
-    border:1.5px solid rgba(244,236,216,0.25);
-    background:transparent;
-    color:var(--cream-text);
-    font-family:'IBM Plex Mono',monospace;
-    font-size:var(--fs-small);
-    font-weight:600;
-    letter-spacing:.05em;
-    text-transform:uppercase;
-    cursor:pointer;
+    flex:1; padding:12px; border-radius:10px; border:1.5px solid rgba(244,236,216,0.25);
+    background:transparent; color:var(--cream-text); font-family:'IBM Plex Mono',monospace;
+    font-size:var(--fs-small); font-weight:600; letter-spacing:.05em; text-transform:uppercase; cursor:pointer;
   }
-  .main-nav button.active{
-    background:var(--mustard);
-    border-color:var(--mustard);
-    color:var(--tile-dark);
-  }
+  .main-nav button.active{ background:var(--mustard); border-color:var(--mustard); color:var(--tile-dark); }
 
   .page{ display:none; max-width:640px; margin:0 auto; padding:0 16px; }
   .page.active{ display:block; }
 
-  /* ---- Vista semana ---- */
   .roll-all{
-    width:100%;
-    padding:13px;
-    border-radius:10px;
-    border:none;
-    background:var(--brick);
-    color:var(--receipt);
-    font-family:'Inter',sans-serif;
-    font-weight:700;
-    font-size:var(--fs-body);
-    cursor:pointer;
-    margin-bottom:16px;
+    width:100%; padding:13px; border-radius:10px; border:none; background:var(--brick);
+    color:var(--receipt); font-family:'Inter',sans-serif; font-weight:700; font-size:var(--fs-body);
+    cursor:pointer; margin-bottom:16px;
   }
   .day-card{
-    background:var(--paper);
-    color:var(--ink);
-    border-radius:12px;
-    padding:14px 14px 6px;
-    margin-bottom:12px;
-    box-shadow:0 3px 0 var(--paper-shadow), 0 6px 14px rgba(0,0,0,0.22);
+    background:var(--paper); color:var(--ink); border-radius:12px; padding:14px 14px 6px;
+    margin-bottom:12px; box-shadow:0 3px 0 var(--paper-shadow), 0 6px 14px rgba(0,0,0,0.22);
   }
-  .day-card h3{
-    font-family:'Fraunces',serif;
-    font-size:var(--fs-day);
-    margin:0 0 10px;
-    display:flex;
-    align-items:center;
-    gap:8px;
-  }
-  .day-card h3 .dot{
-    width:8px;height:8px;border-radius:50%;background:var(--mustard-dark);
-  }
-  .slot-row{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:9px 0;
-    border-top:1px dashed #d8cba3;
-  }
+  .day-card h3{ font-family:'Fraunces',serif; font-size:var(--fs-day); margin:0 0 10px; display:flex; align-items:center; gap:8px; }
+  .day-card h3 .dot{ width:8px;height:8px;border-radius:50%;background:var(--mustard-dark); }
+  .slot-row{ display:flex; align-items:center; gap:10px; padding:9px 0; border-top:1px dashed #d8cba3; }
   .slot-row:first-of-type{ border-top:none; }
   .slot-label{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:var(--fs-small);
-    text-transform:uppercase;
-    letter-spacing:.05em;
-    width:52px;
-    flex-shrink:0;
-    color:#8a7f5f;
+    font-family:'IBM Plex Mono',monospace; font-size:var(--fs-small); text-transform:uppercase;
+    letter-spacing:.05em; width:52px; flex-shrink:0; color:#8a7f5f;
   }
   .slot-filled{
-    flex:1;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:8px;
-    background:var(--receipt);
-    border-radius:8px;
-    padding:8px 10px;
+    flex:1; display:flex; align-items:center; justify-content:space-between; gap:8px;
+    background:var(--receipt); border-radius:8px; padding:8px 10px;
   }
   .slot-filled .sname{ font-size:var(--fs-name); font-weight:600; font-family:'Fraunces',serif; }
   .slot-filled .sbtns{ display:flex; gap:4px; flex-shrink:0; }
-  .slot-filled button{
-    background:none; border:none; cursor:pointer;
-    font-size:15px; padding:4px 6px; color:#8a7f5f;
-  }
-  .slot-empty{
-    flex:1;
-    display:flex;
-    gap:8px;
-  }
+  .slot-filled button{ background:none; border:none; cursor:pointer; font-size:15px; padding:4px 6px; color:#8a7f5f; }
+  .slot-empty{ flex:1; display:flex; gap:8px; }
   .slot-empty button{
-    flex:1;
-    padding:9px;
-    border-radius:8px;
-    border:1.5px dashed #cbbf98;
-    background:transparent;
-    font-family:'IBM Plex Mono',monospace;
-    font-size:var(--fs-small);
-    color:#8a7f5f;
-    cursor:pointer;
+    flex:1; padding:9px; border-radius:8px; border:1.5px dashed #cbbf98; background:transparent;
+    font-family:'IBM Plex Mono',monospace; font-size:var(--fs-small); color:#8a7f5f; cursor:pointer;
   }
   .slot-empty button.dice{ flex:0 0 44px; font-size:16px; }
 
-  /* ---- Vista fichero ---- */
-  .tabs{
-    display:flex;
-    gap:8px;
-    padding:0 0 14px;
-    justify-content:center;
-    flex-wrap:wrap;
-  }
+  .tabs{ display:flex; gap:8px; padding:0 0 14px; justify-content:center; flex-wrap:wrap; }
   .tab{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:var(--fs-small);
-    letter-spacing:.05em;
-    text-transform:uppercase;
-    padding:9px 16px;
-    border-radius:999px;
-    border:1px solid rgba(244,236,216,0.25);
-    background:transparent;
-    color:var(--cream-text);
-    cursor:pointer;
+    font-family:'IBM Plex Mono',monospace; font-size:var(--fs-small); letter-spacing:.05em;
+    text-transform:uppercase; padding:9px 16px; border-radius:999px; border:1px solid rgba(244,236,216,0.25);
+    background:transparent; color:var(--cream-text); cursor:pointer;
   }
   .tab.active{ background:var(--mustard); border-color:var(--mustard); color:var(--tile-dark); font-weight:600; }
 
@@ -237,63 +126,57 @@
   @media(min-width:480px){ .grid{grid-template-columns:repeat(3,1fr);} }
 
   .card{
-    position:relative;
-    background:var(--paper);
-    color:var(--ink);
-    border-radius:10px;
-    padding:16px 14px 14px;
-    min-height:96px;
-    display:flex;
-    align-items:flex-end;
-    cursor:pointer;
+    position:relative; background:var(--paper); color:var(--ink); border-radius:10px;
+    padding:16px 14px 14px; min-height:104px; display:flex; align-items:flex-end; cursor:pointer;
     box-shadow:0 3px 0 var(--paper-shadow), 0 6px 14px rgba(0,0,0,0.25);
-    transform:rotate(var(--r,0deg));
-    -webkit-tap-highlight-color:transparent;
-    user-select:none;
+    transform:rotate(var(--r,0deg)); -webkit-tap-highlight-color:transparent; user-select:none;
   }
   .card:active{ transform:scale(0.96) rotate(var(--r,0deg)); }
   .card .tag{
-    position:absolute; top:10px; right:10px;
-    font-family:'IBM Plex Mono',monospace;
-    font-size:9px; letter-spacing:.08em; text-transform:uppercase;
-    padding:3px 7px; border-radius:999px; color:var(--receipt);
+    position:absolute; top:10px; right:10px; font-family:'IBM Plex Mono',monospace;
+    font-size:9px; letter-spacing:.08em; text-transform:uppercase; padding:3px 7px;
+    border-radius:999px; color:var(--receipt);
   }
   .card .tag.comida{background:var(--mustard-dark);}
   .card .tag.cena{background:var(--brick-dark);}
   .card .name{ font-family:'Fraunces',serif; font-weight:600; font-size:var(--fs-name); line-height:1.2; }
+  .card .fav{
+    position:absolute; top:8px; left:8px; width:24px; height:24px; border-radius:50%;
+    background:rgba(255,255,255,0.55); display:flex; align-items:center; justify-content:center;
+    font-size:14px; color:#a89a6b; cursor:pointer;
+  }
+  .card .fav.active{ color:var(--mustard-dark); background:rgba(255,255,255,0.85); }
+  .card .avg{
+    position:absolute; bottom:9px; left:12px; font-family:'IBM Plex Mono',monospace;
+    font-size:10px; color:#8a7f5f;
+  }
   .card .del{
-    position:absolute; bottom:8px; right:8px;
-    font-size:var(--fs-small); color:rgba(32,48,43,0.35);
-    font-family:'IBM Plex Mono',monospace; padding:4px;
+    position:absolute; bottom:8px; right:8px; font-size:var(--fs-small);
+    color:rgba(32,48,43,0.35); font-family:'IBM Plex Mono',monospace; padding:4px;
   }
   .empty{
-    grid-column:1/-1; text-align:center;
-    color:rgba(244,236,216,0.6); font-size:var(--fs-small);
+    grid-column:1/-1; text-align:center; color:rgba(244,236,216,0.6); font-size:var(--fs-small);
     padding:30px 10px; font-family:'IBM Plex Mono',monospace;
   }
   .add-btn{
-    width:100%; margin-top:16px; padding:14px;
-    border-radius:10px; border:1.5px dashed rgba(244,236,216,0.35);
-    background:transparent; color:var(--cream-text);
-    font-family:'IBM Plex Mono',monospace; font-size:var(--fs-small);
-    letter-spacing:.05em; cursor:pointer;
+    width:100%; margin-top:16px; padding:14px; border-radius:10px; border:1.5px dashed rgba(244,236,216,0.35);
+    background:transparent; color:var(--cream-text); font-family:'IBM Plex Mono',monospace;
+    font-size:var(--fs-small); letter-spacing:.05em; cursor:pointer;
   }
 
-  /* Modal genérico */
   .modal-overlay{
-    position:fixed; inset:0; background:rgba(15,25,23,0.72);
-    display:none; align-items:center; justify-content:center;
-    padding:20px; z-index:50;
+    position:fixed; inset:0; background:rgba(15,25,23,0.72); display:none;
+    align-items:center; justify-content:center; padding:20px; z-index:50;
   }
   .modal-overlay.open{display:flex;}
   .modal{
-    background:var(--paper); color:var(--ink); border-radius:14px;
-    padding:22px; width:100%; max-width:360px; max-height:80vh; overflow-y:auto;
+    background:var(--paper); color:var(--ink); border-radius:14px; padding:22px;
+    width:100%; max-width:380px; max-height:82vh; overflow-y:auto;
   }
   .modal h3{ font-family:'Fraunces',serif; margin:0 0 14px; font-size:20px; }
   .modal label{
-    display:block; font-family:'IBM Plex Mono',monospace; font-size:11px;
-    text-transform:uppercase; letter-spacing:.06em; margin:12px 0 6px; color:#5a5342;
+    display:block; font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase;
+    letter-spacing:.06em; margin:12px 0 6px; color:#5a5342;
   }
   .modal input[type=text]{
     width:100%; padding:11px 12px; border-radius:8px; border:1.5px solid #d8cba3;
@@ -301,28 +184,28 @@
   }
   .seg{ display:flex; gap:8px; margin-top:4px; }
   .seg button{
-    flex:1; padding:10px; border-radius:8px; border:1.5px solid #d8cba3;
-    background:var(--receipt); font-family:'IBM Plex Mono',monospace; font-size:12px;
-    text-transform:uppercase; cursor:pointer; color:var(--ink);
+    flex:1; padding:10px; border-radius:8px; border:1.5px solid #d8cba3; background:var(--receipt);
+    font-family:'IBM Plex Mono',monospace; font-size:12px; text-transform:uppercase; cursor:pointer; color:var(--ink);
   }
   .seg button.sel-comida{background:var(--mustard);border-color:var(--mustard);color:var(--tile-dark);font-weight:700;}
   .seg button.sel-cena{background:var(--brick);border-color:var(--brick);color:var(--receipt);font-weight:700;}
   .modal-actions{ display:flex; gap:10px; margin-top:20px; }
   .modal-actions button{
-    flex:1; padding:12px; border-radius:8px; border:none;
-    font-family:'Inter',sans-serif; font-weight:600; font-size:14px; cursor:pointer;
+    flex:1; padding:12px; border-radius:8px; border:none; font-family:'Inter',sans-serif;
+    font-weight:600; font-size:14px; cursor:pointer;
   }
   .btn-cancel{background:transparent;color:#5a5342;border:1.5px solid #d8cba3 !important;}
   .btn-save{background:var(--tile-dark);color:var(--receipt);}
 
   .pick-list{ display:flex; flex-direction:column; gap:8px; margin-top:6px; }
   .pick-item{
-    display:flex; justify-content:space-between; align-items:center;
-    padding:11px 12px; border-radius:8px; background:var(--receipt);
-    border:1.5px solid #d8cba3; cursor:pointer; font-size:var(--fs-name);
-    font-family:'Fraunces',serif; font-weight:600;
+    display:flex; justify-content:space-between; align-items:center; padding:11px 12px;
+    border-radius:8px; background:var(--receipt); border:1.5px solid #d8cba3; cursor:pointer;
+    font-size:var(--fs-name); font-family:'Fraunces',serif; font-weight:600;
   }
   .pick-item:active{ background:#f0e6c8; }
+  .pick-right{ display:flex; align-items:center; gap:6px; flex-shrink:0; }
+  .prate{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8a7f5f; }
   .pick-item .ptag{
     font-family:'IBM Plex Mono',monospace; font-size:9px; text-transform:uppercase;
     padding:3px 7px; border-radius:999px; color:var(--receipt); font-weight:600;
@@ -330,19 +213,26 @@
   .pick-item .ptag.comida{background:var(--mustard-dark);}
   .pick-item .ptag.cena{background:var(--brick-dark);}
 
-  /* Recibo */
+  .fav-big{
+    width:100%; padding:12px; border-radius:8px; border:1.5px solid var(--mustard-dark);
+    background:transparent; color:var(--mustard-dark); font-weight:700; margin-bottom:16px;
+    cursor:pointer; font-family:'Inter',sans-serif; font-size:14px;
+  }
+  .fav-big.active{ background:var(--mustard); color:var(--tile-dark); border-color:var(--mustard); }
+  .rate-row{ display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px dashed #d8cba3; }
+  .rate-name{ font-family:'Inter',sans-serif; font-size:14px; font-weight:600; }
+  .stars{ display:flex; gap:1px; }
+  .stars button{ background:none; border:none; font-size:19px; cursor:pointer; color:#d8cba3; padding:2px; }
+  .stars button.on{ color:var(--mustard-dark); }
+
   .receipt-tab{ position:fixed; bottom:0; left:0; right:0; z-index:40; }
   .receipt-handle{
     max-width:640px; margin:0 auto; background:var(--mustard); color:var(--tile-dark);
-    font-family:'IBM Plex Mono',monospace; font-size:var(--fs-small); font-weight:600;
-    text-transform:uppercase; letter-spacing:.06em; text-align:center; padding:12px;
-    border-radius:12px 12px 0 0; cursor:pointer; display:flex; align-items:center;
-    justify-content:center; gap:8px;
+    font-family:'IBM Plex Mono',monospace; font-size:var(--fs-small); font-weight:600; text-transform:uppercase;
+    letter-spacing:.06em; text-align:center; padding:12px; border-radius:12px 12px 0 0; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px;
   }
-  .receipt-handle .count{
-    background:var(--tile-dark); color:var(--mustard); border-radius:999px;
-    padding:1px 8px; font-size:11px;
-  }
+  .receipt-handle .count{ background:var(--tile-dark); color:var(--mustard); border-radius:999px; padding:1px 8px; font-size:11px; }
   .receipt-body{
     max-width:640px; margin:0 auto; background:var(--receipt); color:var(--ink);
     max-height:0; overflow:hidden; transition:max-height .25s ease;
@@ -357,10 +247,7 @@
       linear-gradient(225deg, var(--receipt) 25%, transparent 25%) -5px 0;
     background-size:10px 10px; background-color:var(--tile-dark);
   }
-  .r-line{
-    display:flex; justify-content:space-between; align-items:center;
-    font-size:var(--fs-small); padding:6px 0; border-bottom:1px dashed #cbbf98;
-  }
+  .r-line{ display:flex; justify-content:space-between; align-items:center; font-size:var(--fs-small); padding:6px 0; border-bottom:1px dashed #cbbf98; }
   .r-line .rname{flex:1;}
   .r-line .rtag{font-size:10px;color:#8a7f5f;margin-left:8px;}
   .r-empty{ text-align:center; font-size:12px; color:#8a7f5f; padding:14px 0; }
@@ -370,27 +257,46 @@
     font-family:'Inter',sans-serif; font-size:14px; background:#fff;
   }
   .shop-add button{
-    padding:10px 14px; border-radius:6px; border:none;
-    background:var(--tile-dark); color:var(--receipt); font-weight:600; cursor:pointer;
+    padding:10px 14px; border-radius:6px; border:none; background:var(--tile-dark);
+    color:var(--receipt); font-weight:600; cursor:pointer;
   }
   .shop-item{
-    display:flex; align-items:center; gap:10px; padding:8px 0;
-    border-bottom:1px dashed #cbbf98; font-size:var(--fs-body);
+    display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px dashed #cbbf98; font-size:var(--fs-body);
   }
   .shop-item input[type=checkbox]{ width:18px;height:18px; accent-color:var(--brick); flex-shrink:0; }
   .shop-item.checked span{text-decoration:line-through;color:#a89f83;}
   .shop-item .x{ margin-left:auto; background:none;border:none;color:#b8ac82;font-size:14px;cursor:pointer; }
-  .export-btn, .clear-week{
-    width:100%; margin-top:14px; padding:12px; border-radius:8px;
+  .export-btn, .clear-week, .export-btn-secondary{
+    width:100%; margin-top:12px; padding:12px; border-radius:8px;
     font-family:'Inter',sans-serif; font-weight:600; font-size:var(--fs-small); cursor:pointer;
   }
   .export-btn{ border:1.5px solid var(--tile-dark); background:var(--tile-dark); color:var(--receipt); }
+  .export-btn-secondary{ border:1.5px solid #cbbf98; background:transparent; color:#5a5342; }
   .clear-week{ border:1.5px solid var(--brick); background:transparent; color:var(--brick); }
 
   .status{
     text-align:center; font-size:11px; color:rgba(244,236,216,0.4);
     font-family:'IBM Plex Mono',monospace; padding:10px 0 0;
   }
+
+  /* Tarjeta para compartir como imagen (fuera de pantalla) */
+  .share-card{
+    width:720px; background:var(--paper); color:var(--ink);
+    font-family:'Inter',sans-serif; border-radius:20px; overflow:hidden;
+  }
+  .share-card .sc-head{ background:var(--tile-dark); color:var(--receipt); padding:30px 36px 24px; text-align:center; }
+  .share-card .sc-head h2{ font-family:'Fraunces',serif; font-size:32px; margin:0; }
+  .share-card .sc-head p{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; margin:8px 0 0;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--mustard);
+  }
+  .share-card .sc-body{ padding:28px 36px 36px; }
+  .share-card .sc-day{ margin-bottom:14px; }
+  .share-card .sc-day .d-name{ font-family:'Fraunces',serif; font-weight:700; font-size:18px; margin-bottom:4px; }
+  .share-card .sc-day .d-meals{ font-family:'Inter',sans-serif; font-size:15px; color:#4a4436; }
+  .share-card .sc-divider{ height:1px; background:#d8cba3; margin:24px 0; }
+  .share-card .sc-shop h3{ font-family:'Fraunces',serif; font-size:20px; margin:0 0 12px; }
+  .share-card .sc-shop-item{ font-family:'IBM Plex Mono',monospace; font-size:15px; padding:5px 0; }
 </style>
 </head>
 <body>
@@ -407,13 +313,11 @@
   <button data-page="fichero">📖 Fichero</button>
 </div>
 
-<!-- PÁGINA SEMANA -->
 <div class="page active" id="pageSemana">
   <button class="roll-all" id="rollAll">🎲 Sorpréndeme con toda la semana</button>
   <div id="weekGrid"></div>
 </div>
 
-<!-- PÁGINA FICHERO -->
 <div class="page" id="pageFichero">
   <div class="tabs">
     <button class="tab active" data-filter="todas">Todas</button>
@@ -455,6 +359,18 @@
   </div>
 </div>
 
+<!-- Modal valorar plato -->
+<div class="modal-overlay" id="rateOverlay">
+  <div class="modal">
+    <h3 id="rateTitle">Plato</h3>
+    <button class="fav-big" id="favBig">☆ Marcar como favorito</button>
+    <div id="rateList"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="rateClose" style="flex:1;">Cerrar</button>
+    </div>
+  </div>
+</div>
+
 <!-- Recibo / lista de la compra -->
 <div class="receipt-tab">
   <div class="receipt-handle" id="receiptHandle">
@@ -472,7 +388,8 @@
         <input type="text" id="shopInput" placeholder="Añadir algo a la compra...">
         <button id="shopAddBtn">+</button>
       </div>
-      <button class="export-btn" id="exportBtn">📤 Compartir lista de la compra</button>
+      <button class="export-btn" id="shareImgBtn">🖼️ Compartir semana como imagen</button>
+      <button class="export-btn-secondary" id="exportBtn">📋 Copiar lista de la compra (texto)</button>
       <button class="clear-week" id="clearWeek">Vaciar semana y lista</button>
     </div>
   </div>
@@ -507,6 +424,8 @@ async function kvSet(key, value){
   if(!res.ok) throw new Error('kvSet failed: ' + res.status);
 }
 
+const PEOPLE = ["Juan","Pilar","Judith","Heber","Samuel","Aaron","Ruth"];
+
 const DEFAULT_MEALS = [
   {name:"Judías verdes con huevos rellenos", type:"comida"},
   {name:"Macarrones con atún", type:"comida"},
@@ -526,12 +445,13 @@ const DAYS = [
 ];
 
 let meals = [];
-let weekPlan = {};   // { lun: {comida:id|null, cena:id|null}, ... }
+let weekPlan = {};
 let shopping = [];
 let filter = "todas";
 let newMealType = "comida";
 let saving = false;
-let pickTarget = null; // {day, slot}
+let pickTarget = null;
+let rateTarget = null;
 
 const $ = (id) => document.getElementById(id);
 const grid = $("grid");
@@ -548,12 +468,17 @@ function emptyWeekPlan(){
   DAYS.forEach(d=> w[d.key] = {comida:null, cena:null});
   return w;
 }
+function avgRating(m){
+  const vals = Object.values(m.ratings||{}).filter(v=>v>0);
+  if(!vals.length) return null;
+  return vals.reduce((a,b)=>a+b,0)/vals.length;
+}
 
 // ---------- Carga y guardado ----------
 async function loadAll(){
   if(SUPABASE_URL.includes('PON_AQUI') || SUPABASE_ANON_KEY.includes('PON_AQUI')){
     setStatus('Falta configurar SUPABASE_URL y SUPABASE_ANON_KEY');
-    meals = DEFAULT_MEALS.map(m=>({id:uid(), ...m, lastPicked:null}));
+    meals = DEFAULT_MEALS.map(m=>({id:uid(), ...m, lastPicked:null, favorite:false, ratings:{}}));
     weekPlan = emptyWeekPlan();
     render();
     return;
@@ -562,10 +487,14 @@ async function loadAll(){
     meals = await kvGet('meals');
   }catch(e){ setStatus('Error al conectar con la base de datos'); meals = null; }
   if(!meals || meals.length===0){
-    meals = DEFAULT_MEALS.map(m=>({id:uid(), ...m, lastPicked:null}));
+    meals = DEFAULT_MEALS.map(m=>({id:uid(), ...m, lastPicked:null, favorite:false, ratings:{}}));
     try{ await kvSet('meals', meals); }catch(e){}
   }
-  meals.forEach(m=>{ if(m.lastPicked===undefined) m.lastPicked=null; });
+  meals.forEach(m=>{
+    if(m.lastPicked===undefined) m.lastPicked=null;
+    if(m.favorite===undefined) m.favorite=false;
+    if(!m.ratings) m.ratings={};
+  });
 
   try{
     weekPlan = (await kvGet('week-plan')) || emptyWeekPlan();
@@ -620,7 +549,7 @@ function slotRow(day, slot, mealId){
     return `<div class="slot-row">
       <div class="slot-label">${label}</div>
       <div class="slot-filled">
-        <span class="sname">${escapeHtml(meal.name)}</span>
+        <span class="sname">${meal.favorite?'★ ':''}${escapeHtml(meal.name)}</span>
         <span class="sbtns">
           <button data-dice data-day="${day}" data-slot="${slot}" title="Cambiar al azar">🎲</button>
           <button data-clear data-day="${day}" data-slot="${slot}" title="Quitar">×</button>
@@ -658,7 +587,13 @@ function pickRandomMeal(type){
   if(candidates.length===0) return null;
   const sorted = [...candidates].sort((a,b)=>(a.lastPicked||0)-(b.lastPicked||0));
   const pool = sorted.slice(0, Math.max(3, Math.ceil(sorted.length/2)));
-  return pool[Math.floor(Math.random()*pool.length)];
+  const weighted = [];
+  pool.forEach(m=>{
+    const avg = avgRating(m) || 0;
+    const weight = Math.max(1, Math.round((m.favorite?2:1) + avg/2));
+    for(let i=0;i<weight;i++) weighted.push(m);
+  });
+  return weighted[Math.floor(Math.random()*weighted.length)];
 }
 
 async function rollSlot(day, slot){
@@ -696,12 +631,19 @@ function openPicker(day, slot){
   if(list.length===0){
     listEl.innerHTML = '<div class="r-empty">No hay platos de este tipo. Añade uno en el Fichero.</div>';
   } else {
-    listEl.innerHTML = list.map(m=>`
-      <div class="pick-item" data-id="${m.id}">
-        <span>${escapeHtml(m.name)}</span>
-        <span class="ptag ${m.type}">${m.type}</span>
-      </div>
-    `).join('');
+    listEl.innerHTML = list.map(m=>{
+      const avg = avgRating(m);
+      const rateTxt = avg!==null ? `★${avg.toFixed(1)}` : '';
+      return `
+        <div class="pick-item" data-id="${m.id}">
+          <span>${m.favorite?'★ ':''}${escapeHtml(m.name)}</span>
+          <span class="pick-right">
+            ${rateTxt ? `<span class="prate">${rateTxt}</span>` : ''}
+            <span class="ptag ${m.type}">${m.type}</span>
+          </span>
+        </div>
+      `;
+    }).join('');
     listEl.querySelectorAll('.pick-item').forEach(el=>{
       el.addEventListener('click', async ()=>{
         await assignSlot(pickTarget.day, pickTarget.slot, el.dataset.id);
@@ -713,6 +655,49 @@ function openPicker(day, slot){
 }
 $("pickCancel").addEventListener('click', ()=> $("pickOverlay").classList.remove('open'));
 $("pickOverlay").addEventListener('click', (e)=>{ if(e.target.id==='pickOverlay') $("pickOverlay").classList.remove('open'); });
+
+// ---------- Modal valorar / favorito ----------
+function openRate(mealId){
+  const m = meals.find(x=>x.id===mealId);
+  if(!m) return;
+  rateTarget = mealId;
+  $("rateTitle").textContent = m.name;
+  $("favBig").textContent = m.favorite ? '★ Favorito' : '☆ Marcar como favorito';
+  $("favBig").classList.toggle('active', !!m.favorite);
+  $("rateList").innerHTML = PEOPLE.map(p=>{
+    const val = (m.ratings && m.ratings[p]) || 0;
+    const stars = [1,2,3,4,5].map(n=>`<button data-n="${n}" class="${n<=val?'on':''}">★</button>`).join('');
+    return `<div class="rate-row"><span class="rate-name">${p}</span><span class="stars" data-person="${p}">${stars}</span></div>`;
+  }).join('');
+  $("rateList").querySelectorAll('.stars').forEach(starsEl=>{
+    starsEl.querySelectorAll('button').forEach(btn=>{
+      btn.addEventListener('click', ()=> setRating(starsEl.dataset.person, parseInt(btn.dataset.n)));
+    });
+  });
+  $("rateOverlay").classList.add('open');
+}
+async function setRating(person, n){
+  const m = meals.find(x=>x.id===rateTarget);
+  if(!m) return;
+  if(!m.ratings) m.ratings = {};
+  m.ratings[person] = (m.ratings[person]===n) ? 0 : n;
+  openRate(rateTarget);
+  renderGrid();
+  renderWeek();
+  await saveMeals();
+}
+$("favBig").addEventListener('click', async ()=>{
+  const m = meals.find(x=>x.id===rateTarget);
+  if(!m) return;
+  m.favorite = !m.favorite;
+  $("favBig").textContent = m.favorite ? '★ Favorito' : '☆ Marcar como favorito';
+  $("favBig").classList.toggle('active', m.favorite);
+  renderGrid();
+  renderWeek();
+  await saveMeals();
+});
+$("rateClose").addEventListener('click', ()=> $("rateOverlay").classList.remove('open'));
+$("rateOverlay").addEventListener('click', (e)=>{ if(e.target.id==='rateOverlay') $("rateOverlay").classList.remove('open'); });
 
 // ---------- Fichero (grid de platos) ----------
 function renderGrid(){
@@ -726,19 +711,31 @@ function renderGrid(){
     const card = document.createElement('div');
     card.className = 'card';
     card.style.setProperty('--r', ((i % 5) - 2) * 0.6 + 'deg');
+    const avg = avgRating(m);
     card.innerHTML = `
+      <div class="fav ${m.favorite?'active':''}" data-id="${m.id}">${m.favorite?'★':'☆'}</div>
       <div class="tag ${m.type}">${m.type}</div>
+      ${avg!==null ? `<div class="avg">★${avg.toFixed(1)}</div>` : ''}
       <div class="name">${escapeHtml(m.name)}</div>
       <div class="del" data-id="${m.id}">borrar</div>
     `;
     card.addEventListener('click', (e)=>{
-      if(e.target.classList.contains('del')){
-        e.stopPropagation();
-        deleteMeal(m.id);
-      }
+      if(e.target.classList.contains('del')){ e.stopPropagation(); deleteMeal(m.id); return; }
+      if(e.target.classList.contains('fav')){ e.stopPropagation(); toggleFavorite(m.id); return; }
+      openRate(m.id);
     });
     grid.appendChild(card);
   });
+}
+
+async function toggleFavorite(id){
+  const m = meals.find(x=>x.id===id);
+  if(!m) return;
+  m.favorite = !m.favorite;
+  renderGrid();
+  renderWeek();
+  await saveMeals();
+  setStatus(m.favorite ? 'Favorito añadido' : 'Favorito quitado');
 }
 
 async function deleteMeal(id){
@@ -801,7 +798,7 @@ $("saveAdd").addEventListener('click', async ()=>{
   if(!name){ setStatus('Escribe un nombre'); return; }
   if(saving) return;
   saving = true;
-  meals.push({id:uid(), name, type:newMealType, lastPicked:null});
+  meals.push({id:uid(), name, type:newMealType, lastPicked:null, favorite:false, ratings:{}});
   renderGrid();
   await saveMeals();
   saving = false;
@@ -899,7 +896,82 @@ $("exportBtn").addEventListener('click', async ()=>{
   }catch(e){ setStatus('No se pudo compartir ni copiar'); }
 });
 
-// ---------- Modo letra grande (preferencia local del móvil) ----------
+// ---------- Compartir semana como imagen ----------
+function buildShareCard(){
+  const el = document.createElement('div');
+  el.className = 'share-card';
+  el.style.position='fixed';
+  el.style.left='-9999px';
+  el.style.top='0';
+
+  let daysHtml = '';
+  DAYS.forEach(d=>{
+    const plan = weekPlan[d.key];
+    const cM = plan.comida ? meals.find(m=>m.id===plan.comida) : null;
+    const cC = plan.cena ? meals.find(m=>m.id===plan.cena) : null;
+    if(!cM && !cC) return;
+    const parts = [];
+    if(cM) parts.push(`Comida: ${escapeHtml(cM.name)}`);
+    if(cC) parts.push(`Cena: ${escapeHtml(cC.name)}`);
+    daysHtml += `<div class="sc-day"><div class="d-name">${d.label}</div><div class="d-meals">${parts.join(' · ')}</div></div>`;
+  });
+  if(!daysHtml) daysHtml = '<div class="d-meals">Semana todavía sin planear.</div>';
+
+  const pending = shopping.filter(it=>!it.checked);
+  const shopHtml = pending.length
+    ? pending.map(it=>`<div class="sc-shop-item">☐ ${escapeHtml(it.text)}</div>`).join('')
+    : '<div class="sc-shop-item">Nada pendiente ahora mismo.</div>';
+
+  el.innerHTML = `
+    <div class="sc-head">
+      <h2>¿Qué comemos?</h2>
+      <p>Menú de la semana</p>
+    </div>
+    <div class="sc-body">
+      ${daysHtml}
+      <div class="sc-divider"></div>
+      <div class="sc-shop">
+        <h3>🛒 Lista de la compra</h3>
+        ${shopHtml}
+      </div>
+    </div>
+  `;
+  return el;
+}
+
+$("shareImgBtn").addEventListener('click', async ()=>{
+  if(typeof html2canvas === 'undefined'){
+    setStatus('No se pudo cargar el generador de imágenes');
+    return;
+  }
+  setStatus('Generando imagen...');
+  const node = buildShareCard();
+  document.body.appendChild(node);
+  await new Promise(r=>setTimeout(r,60));
+  try{
+    const canvas = await html2canvas(node, {backgroundColor:'#F4ECD8', scale:2});
+    document.body.removeChild(node);
+    canvas.toBlob(async (blob)=>{
+      if(!blob){ setStatus('No se pudo generar la imagen'); return; }
+      const file = new File([blob], 'menu-semana.png', {type:'image/png'});
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        try{ await navigator.share({files:[file], title:'Menú de la semana'}); return; }
+        catch(e){}
+      }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'menu-semana.png';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 2000);
+      setStatus('Imagen descargada');
+    }, 'image/png');
+  }catch(e){
+    if(document.body.contains(node)) document.body.removeChild(node);
+    setStatus('No se pudo generar la imagen');
+  }
+});
+
+// ---------- Modo letra grande ----------
 $("fontToggle").addEventListener('click', ()=>{
   const on = document.body.classList.toggle('font-xl');
   $("fontToggle").classList.toggle('active', on);
